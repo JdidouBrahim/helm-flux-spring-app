@@ -16,7 +16,7 @@ build-java-app:
     - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
     - docker push $DOCKER_IMAGE:$DOCKER_TAG
   only:
-    - main
+    - master
 
 # Update the Helm chart with the new Docker image tag, package, and push to the Helm repository
 update-helm-repo:
@@ -38,4 +38,4 @@ update-helm-repo:
     - git commit -m "Update Helm chart for Java app version $DOCKER_TAG"
     - git push origin main
   only:
-    - main
+    - master
