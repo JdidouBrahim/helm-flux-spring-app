@@ -4,34 +4,37 @@ stages:
 
 variables:
   DOCKER_IMAGE: https://hub.docker.com/r/hbn348/myapp
-  HELM_REPO: https://helm-18bc38.gitlab.io/
+  HELM_REPO: https://helm-18bc38.gitlab.io/my-helm-repo/
+  DOCKER_TAG: $CI_COMMIT_SHORT_SHA
 
-# Build the Docker image for the Java app
+# Build and push the Docker image to Docker Hub
 build-java-app:
   stage: build
   script:
     - echo "Building Docker image..."
-    - docker build -t $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA .
-    - echo "Pushing Docker image to registry..."
-    - docker push $DOCKER_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+    - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+    - docker push $DOCKER_IMAGE:$DOCKER_TAG
   only:
     - main
 
-# Update Helm chart with the new image tag, package, and push to Helm repo
+# Update the Helm chart with the new Docker image tag, package, and push to the Helm repository
 update-helm-repo:
   stage: update-helm-repo
   before_script:
     - apt-get update && apt-get install -y helm
   script:
     # Update values.yaml with the new Docker image tag
-    - sed -i "s/tag:.*/tag: $CI_COMMIT_SHORT_SHA/" mychart/values.yaml
+    - sed -i "s/tag:.*/tag: $DOCKER_TAG/" mychart/values.yaml
+    # Package the Helm chart
     - helm package mychart
+    # Update the index.yaml file for the Helm repo
     - helm repo index . --url $HELM_REPO
-    # Push the updated chart and index.yaml to Helm repo
+    # Commit and push the updated Helm chart and index.yaml
     - git config --global user.email "ci@automation.com"
     - git config --global user.name "CI Automation"
     - git add .
-    - git commit -m "Update Helm chart for Java app version $CI_COMMIT_SHORT_SHA"
+    - git commit -m "Update Helm chart for Java app version $DOCKER_TAG"
     - git push origin main
   only:
     - main
