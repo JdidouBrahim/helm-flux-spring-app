@@ -25,7 +25,8 @@ update-helm-repo:
     - apt-get update && apt-get install -y helm
   script:
     # Update values.yaml with the new Docker image tag
-    - sed -i "s/tag:.*/tag: $DOCKER_TAG/" mychart/values.yaml
+    - |
+      sed -i "s/tag:.*/tag: $DOCKER_TAG/" mychart/values.yaml
     # Package the Helm chart
     - helm package mychart
     # Update the index.yaml file for the Helm repo
