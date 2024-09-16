@@ -1,13 +1,11 @@
 stages:
   - build
-  - update-helm-repo
+  - trigger-helm
 
 variables:
   DOCKER_IMAGE: hbn348/myapp
-  HELM_REPO: https://helm-18bc38.gitlab.io/my-helm-repo/
   DOCKER_TAG: $CI_COMMIT_SHORT_SHA
 
-# Build and push the Docker image to Docker Hub
 build-java-app:
   image: docker:latest # Use Docker image with Docker CLI installed
   services:
@@ -21,33 +19,12 @@ build-java-app:
   only:
     - master
 
-# Update the Helm chart with the new Docker image tag, package, and push to the Helm repository
-update-helm-repo:
-  stage: update-helm-repo
-  before_script:
-    # Install necessary packages
-    - apt-get update && apt-get install -y curl git
-    # Download and install Helm 3.x
-    - curl -fsSL -o helm.tar.gz https://get.helm.sh/helm-v3.9.4-linux-amd64.tar.gz
-    - tar -zxvf helm.tar.gz
-    - mv linux-amd64/helm /usr/local/bin/helm
-    - chmod +x /usr/local/bin/helm
-  script:
-    # Print Helm version and help to debug issues
-    - helm version
-    - helm help
-    # Update values.yaml with the new Docker image tag
-    - |
-      sed -i "s/tag:.*/tag: $DOCKER_TAG/" mychart/values.yaml
-    # Package the Helm chart
-    - helm package mychart
-    # Update the index.yaml file for the Helm repo
-    - helm repo index . --url $HELM_REPO
-    # Commit and push the updated Helm chart and index.yaml
-    - git config --global user.email "ci@automation.com"
-    - git config --global user.name "CI Automation"
-    - git add .
-    - git commit -m "Update Helm chart for Java app version $DOCKER_TAG"
-    - git push origin main
+trigger-helm-pipeline:
+  stage: trigger-helm
+  script: echo "Triggering Helm pipeline..."
+  trigger:
+    project: "JdidouBrahim/helm"  # Helm repository project in GitLab
+    branch: "main"  # Branch to trigger in the Helm repo
+    strategy: depend  # Wait for the pipeline to finish
   only:
     - master
