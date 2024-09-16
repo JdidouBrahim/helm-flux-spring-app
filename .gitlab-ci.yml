@@ -3,7 +3,7 @@ stages:
   - update-helm-repo
 
 variables:
-  DOCKER_IMAGE: https://hub.docker.com/r/hbn348/myapp
+  DOCKER_IMAGE: hbn348/myapp
   HELM_REPO: https://helm-18bc38.gitlab.io/my-helm-repo/
   DOCKER_TAG: $CI_COMMIT_SHORT_SHA
 
