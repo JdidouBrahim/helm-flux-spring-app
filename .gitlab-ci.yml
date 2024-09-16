@@ -9,6 +9,9 @@ variables:
 
 # Build and push the Docker image to Docker Hub
 build-java-app:
+  image: docker:latest # Use Docker image with Docker CLI installed
+  services:
+    - docker:dind # Docker-in-Docker service
   stage: build
   script:
     - echo "Building Docker image..."
@@ -21,8 +24,9 @@ build-java-app:
 # Update the Helm chart with the new Docker image tag, package, and push to the Helm repository
 update-helm-repo:
   stage: update-helm-repo
+  image: alpine/helm:latest # Use an image with Helm pre-installed
   before_script:
-    - apt-get update && apt-get install -y helm
+    - apk update && apk add git
   script:
     # Update values.yaml with the new Docker image tag
     - |
