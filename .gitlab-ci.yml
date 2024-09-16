@@ -24,9 +24,14 @@ build-java-app:
 # Update the Helm chart with the new Docker image tag, package, and push to the Helm repository
 update-helm-repo:
   stage: update-helm-repo
-  image: lwolf/helm-kubectl-docker:v152_213
   before_script:
-    - apk update && apk add git
+    # Install necessary packages
+    - apt-get update && apt-get install -y curl git
+    # Download and install Helm 3.x
+    - curl -fsSL -o helm.tar.gz https://get.helm.sh/helm-v3.9.4-linux-amd64.tar.gz
+    - tar -zxvf helm.tar.gz
+    - mv linux-amd64/helm /usr/local/bin/helm
+    - chmod +x /usr/local/bin/helm
   script:
     # Print Helm version and help to debug issues
     - helm version
