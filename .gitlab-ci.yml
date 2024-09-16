@@ -21,9 +21,8 @@ build-java-app:
 
 trigger-helm-pipeline:
   stage: trigger-helm
-  script: echo "Triggering Helm pipeline..."
   trigger:
-    project: "JdidouBrahim/helm"  # Helm repository project in GitLab
+    project: JdidouBrahim/helm  # Helm repository project in GitLab
     branch: "main"  # Branch to trigger in the Helm repo
     strategy: depend  # Wait for the pipeline to finish
   only:
