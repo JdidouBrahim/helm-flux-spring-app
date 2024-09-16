@@ -24,10 +24,13 @@ build-java-app:
 # Update the Helm chart with the new Docker image tag, package, and push to the Helm repository
 update-helm-repo:
   stage: update-helm-repo
-  image: alpine/helm:latest # Use an image with Helm pre-installed
+  image: bitnami/helm:3.9.0
   before_script:
     - apk update && apk add git
   script:
+    - # Print Helm version and help to debug issues
+    - helm version
+    - helm help
     # Update values.yaml with the new Docker image tag
     - |
       sed -i "s/tag:.*/tag: $DOCKER_TAG/" mychart/values.yaml
