@@ -25,5 +25,7 @@ trigger-helm-pipeline:
     project: JdidouBrahim/helm  # Helm repository project in GitLab
     branch: "main"  # Branch to trigger in the Helm repo
     strategy: depend  # Wait for the pipeline to finish
+    variables:
+      DOCKER_TAG: $DOCKER_TAG # Pass Docker TAG TO HELM PIPELINE
   only:
     - master
