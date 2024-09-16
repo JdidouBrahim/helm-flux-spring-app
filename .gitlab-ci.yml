@@ -25,7 +25,13 @@ build-java-app:
 update-helm-repo:
   stage: update-helm-repo
   before_script:
-    - apt-get update && apt-get install -y helm
+    # Install necessary packages
+    - apt-get update && apt-get install -y curl git
+    # Download and install Helm
+    - curl -fsSL -o /usr/local/bin/helm https://get.helm.sh/helm-v3.9.4-linux-amd64.tar.gz
+    - tar -zxvf helm-v3.9.4-linux-amd64.tar.gz
+    - mv linux-amd64/helm /usr/local/bin/helm
+    - chmod +x /usr/local/bin/helm
   script:
     # Print Helm version and help to debug issues
     - helm version
