@@ -24,9 +24,8 @@ build-java-app:
 # Update the Helm chart with the new Docker image tag, package, and push to the Helm repository
 update-helm-repo:
   stage: update-helm-repo
-  image: alpine/helm
   before_script:
-    - apk update && apk add git
+    - apt-get update && apt-get install -y helm
   script:
     # Print Helm version and help to debug issues
     - helm version
