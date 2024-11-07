@@ -24,15 +24,16 @@ jobs:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
 
+      - name: Set environment variables
+        env:
+          DOCKER_IMAGE: hbn348/myapp
+          DOCKER_TAG: ${{ github.sha }}  # use the full GitHub SHA
+
       - name: Build Docker image
-        run: |
-          export DOCKER_TAG=${GITHUB_SHA::7}
-          docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
-          echo "Built Docker image with tag: $DOCKER_TAG"
+        run: docker build -t $DOCKER_IMAGE:${DOCKER_TAG:0:7}
 
       - name: Push Docker image
-        run: |
-          docker push $DOCKER_IMAGE:$DOCKER_TAG
+        run: docker push $DOCKER_IMAGE:${DOCKER_TAG:0:7}
 
   trigger-helm-pipeline:
     runs-on: ubuntu-latest
