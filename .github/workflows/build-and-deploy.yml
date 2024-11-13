@@ -42,7 +42,7 @@ jobs:
 
       # Set DOCKER_TAG as output for other jobs to use
       - name: Set DOCKER_TAG as output
-        run: echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_OUTPUT  # Set the output for use in the next job
+        run: echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV  # Set the output for use in the next job
 
   trigger-helm-pipeline:
     runs-on: ubuntu-latest
