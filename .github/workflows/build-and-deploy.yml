@@ -27,34 +27,20 @@ jobs:
       - name: Set environment variables
         run: echo "DOCKER_IMAGE=hbn348/myapp" >> $GITHUB_ENV
 
-      - name: Set GitHub SHA as DOCKER_TAG
-        run: echo "DOCKER_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
-      - name: Print DOCKER_TAG value (Debug)
-        run: |
-          echo "DOCKER_TAG is: $DOCKER_TAG"
-
       - name: Build Docker image
         run: docker build -t ${{ env.DOCKER_IMAGE }}:$DOCKER_TAG .
 
       - name: Push Docker image
         run: docker push ${{ env.DOCKER_IMAGE }}:$DOCKER_TAG
 
-      # Set DOCKER_TAG as output for other jobs to use
-      - name: Set DOCKER_TAG as output
-        run: echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV  # Set the output for use in the next job
 
   trigger-helm-pipeline:
     runs-on: ubuntu-latest
     needs: build-java-app  # Ensure this job waits for the build-java-app job and uses its outputs
     steps:
-      - name: Print DOCKER_TAG value (Debug)
-        run: |
-          echo "DOCKER_TAG passed from previous job: ${GITHUB_SHA::7}"
-
       - name: Trigger Helm Pipeline
         env:
-          DOCKER_TAG: ${{ needs.build-java-app.outputs.DOCKER_TAG }}  # Pass the output as an environment variable to the next job
+          DOCKER_TAG: ${GITHUB_SHA::7}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           echo "Docker tag is : $DOCKER_TAG"
