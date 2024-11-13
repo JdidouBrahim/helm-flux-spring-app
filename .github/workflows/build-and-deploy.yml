@@ -61,4 +61,4 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token $PERSONAL_ACCESS_TOKEN" \
             https://api.github.com/repos/JdidouBrahim/helm/actions/workflows/build-and-deploy.yml/dispatches \
-            -d '{"ref":"main", "inputs": {"DOCKER_TAG": "'"${DOCKER_TAG}"'"}}'
+            -d '{"ref":"main", "inputs": {"DOCKER_TAG": "'"$DOCKER_TAG"'"}}'
