@@ -36,6 +36,10 @@ jobs:
           echo "DOCKER_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
           echo "::set-output name=DOCKER_TAG::${GITHUB_SHA::7}"
 
+      - name: Print DOCKER_TAG value (Debug)
+        run: |
+          echo "DOCKER_TAG is: $DOCKER_TAG"
+
       - name: Build Docker image
         run: docker build -t ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} .
 
