@@ -50,7 +50,7 @@ jobs:
     steps:
       - name: Print DOCKER_TAG value (Debug)
         run: |
-          echo "DOCKER_TAG passed from previous job: ${{ needs.build-java-app.outputs.DOCKER_TAG }}"
+          echo "DOCKER_TAG passed from previous job: ${GITHUB_SHA::7}"
 
       - name: Trigger Helm Pipeline
         env:
