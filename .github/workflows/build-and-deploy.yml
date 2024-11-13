@@ -27,12 +27,15 @@ jobs:
       - name: Set environment variables
         run: echo "DOCKER_IMAGE=hbn348/myapp" >> $GITHUB_ENV
 
+      - name: Set GitHub SHA as DOCKER_TAG
+        run: echo "DOCKER_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+
       - name: Build Docker image
         run: docker build -t ${{ env.DOCKER_IMAGE }}:$DOCKER_TAG .
 
       - name: Push Docker image
         run: docker push ${{ env.DOCKER_IMAGE }}:$DOCKER_TAG
-
 
   trigger-helm-pipeline:
     runs-on: ubuntu-latest
